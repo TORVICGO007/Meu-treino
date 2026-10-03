@@ -140,7 +140,108 @@
  
     <hr>
     
+  <!-- Lista dos treinos para cada parte de corpo -->
+    <section id="listagem">
+      <h2>Meus treinos</h2>
+ 
+      <form action="#" method="get">
+        <p>
+          <label for="pesquisa">Pesquisar:</label>
+          <input type="search" id="pesquisa" name="pesquisa" placeholder="Nome do treino">
+          <button type="button">Buscar</button>
+        </p>
+ 
+        <p>
+          <label for="filtro-grupo">Grupo muscular:</label>
+          <select id="filtro-grupo" name="filtro-grupo">
+            <option value="">Todos</option>
+            <option value="peito">Peito</option>
+            <option value="costas">Costas</option>
+            <option value="pernas">Pernas</option>
+            <option value="ombros">Ombros</option>
+            <option value="bracos">Braços</option>
+            <option value="abdomen">Abdômen</option>
+            <option value="corpo-inteiro">Corpo inteiro</option>
+          </select>
+ 
+          <label for="filtro-status">Status:</label>
+          <select id="filtro-status" name="filtro-status">
+            <option value="">Todos</option>
+            <option value="ativo">Ativo</option>
+            <option value="pausado">Pausado</option>
+            <option value="concluido">Concluído</option>
+          </select>
+        </p>
+ 
+        <p>
+          <label for="ordenar">Ordenar por:</label>
+          <select id="ordenar" name="ordenar">
+            <option value="nome">Nome</option>
+            <option value="data-inicio">Data de início</option>
+            <option value="duracao">Duração</option>
+          </select>
+          <button type="button">Aplicar</button>
+        </p>
+      </form>
+ 
+      <table border="1">
+        <caption>Lista de treinos cadastrados</caption>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Objetivo</th>
+            <th>Grupo muscular</th>
+            <th>Duração</th>
+            <th>Início</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Treino A - Peito e Tríceps</td>
+            <td>Hipertrofia</td>
+            <td>Peito</td>
+            <td>60 min</td>
+            <td>01/09/2026</td>
+            <td>Ativo</td>
+            <td>
+              <button type="button">Ver detalhes</button>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Treino B - Costas e Bíceps</td>
+            <td>Hipertrofia</td>
+            <td>Costas</td>
+            <td>55 min</td>
+            <td>01/09/2026</td>
+            <td>Ativo</td>
+            <td>
+              <button type="button">Ver detalhes</button>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Treino C - Pernas</td>
+            <td>Força</td>
+            <td>Pernas</td>
+            <td>70 min</td>
+            <td>15/08/2026</td>
+            <td>Concluído</td>
+            <td>
+              <button type="button">Ver detalhes</button>
+              <button type="button">Editar</button>
+              <button type="button">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+ 
+    <hr>
 
-    
 </body>
 </html>
