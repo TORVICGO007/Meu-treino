@@ -19,3 +19,135 @@
  
   --fonte: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
+
+/* ============ 2. RESET E BASE (Box Model + tipografia) ============ */
+/* box-sizing: border-box faz padding e borda entrarem DENTRO da largura. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+/* rolagem suave ao clicar nos links do menu (âncoras) */
+html { scroll-behavior: smooth; }
+ 
+body {
+  font-family: var(--fonte);
+  font-size: 16px;
+  line-height: 1.5;                 /* propriedade de texto: entrelinha */
+  color: var(--cor-texto);
+  background-color: var(--cor-fundo);
+  /* sutil brilho verde no topo, só decorativo */
+  background-image: radial-gradient(900px 400px at 80% -10%, rgba(195, 245, 60, 0.08), transparent 60%);
+  min-height: 100vh;
+}
+ 
+h1, h2, h3, h4 { line-height: 1.2; font-weight: 700; }
+ 
+a { color: inherit; text-decoration: none; }
+ 
+/* Esconde visualmente, mas mantém para leitores de tela (acessibilidade) */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+ 
+/* ============ 3. CONTAINER (centraliza o conteúdo) ============ */
+.container {
+  width: 100%;
+  max-width: var(--largura-max);
+  margin-inline: auto;              /* centraliza horizontalmente */
+  padding-inline: var(--espaco);    /* respiro nas laterais (gutter) */
+}
+ 
+/* ============ 4. CABEÇALHO E NAVEGAÇÃO ============ */
+.site-header {
+  padding-block: 28px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+ 
+/* Flexbox: nome à esquerda, logo à direita */
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco);
+}
+ 
+.brand__name {
+  font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem);  /* tipografia fluida */
+  letter-spacing: -0.02em;
+}
+.brand__dot { color: var(--cor-acento); }          /* cor de destaque */
+.brand__tagline {
+  color: var(--cor-texto-suave);
+  font-size: 0.95rem;
+  margin-top: 4px;
+  max-width: 48ch;
+}
+ 
+.logo-mark svg { display: block; }
+.logo-mark polygon { fill: var(--cor-acento); }
+ 
+/* Navegação com Flexbox */
+.main-nav { border-bottom: 1px solid var(--cor-borda); }
+.main-nav__list {
+  display: flex;
+  flex-wrap: wrap;                  /* quebra em telas pequenas */
+  gap: 6px;
+  list-style: none;
+}
+.main-nav__link {
+  display: inline-block;
+  padding: 14px 16px;
+  color: var(--cor-texto-suave);
+  font-weight: 500;
+  border-bottom: 2px solid transparent;  /* borda inferior como indicador */
+  transition: color 0.15s, border-color 0.15s;
+}
+.main-nav__link:hover { color: var(--cor-texto); }
+.main-nav__link.is-active {
+  color: var(--cor-texto);
+  border-bottom-color: var(--cor-acento);
+}
+ 
+/* ============ 5. ESTRUTURA PRINCIPAL, CARTÕES E TÍTULOS ============ */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;                        /* espaçamento entre seções */
+  padding-block: 28px;
+}
+ 
+.card {
+  background-color: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);       /* bordas arredondadas */
+  padding: clamp(16px, 2vw, 28px);  /* Box Model: padding interno */
+}
+ 
+.section-title {
+  font-size: 1.3rem;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+ 
+/* Mensagem / estado de interação */
+.message {
+  padding: 12px 14px;
+  border-radius: var(--raio-sm);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+}
+.message--success {
+  color: var(--cor-acento);
+  background-color: rgba(195, 245, 60, 0.08);
+  border-color: rgba(195, 245, 60, 0.25);
+}
