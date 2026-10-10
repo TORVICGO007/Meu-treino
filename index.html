@@ -1,159 +1,189 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Treino</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Treino</title>
+
+  <!-- Tipografia externa (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    
-      <header>
-    <h1>Meu Treino</h1>
-    <p>Sistema para gerenciar treinos personalizados de musculação e acompanhar a evolução.</p>
-      </header>
 
+  <!-- ===== Cabeçalho / identificação ===== -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <div class="brand">
+        <h1 class="brand__name">Meu Treino<span class="brand__dot">.</span></h1>
+        <p class="brand__tagline">Gerencie treinos personalizados de musculação e acompanhe sua evolução.</p>
+      </div>
 
-     <nav>
-    <ul>
-      <li><a href="#cadastro">Cadastrar treino</a></li>
-      <li><a href="#listagem">Meus treinos</a></li>
-      <li><a href="#detalhes">Detalhes do treino</a></li>
+      <!-- Marca visual: três barras diagonais -->
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 40" width="64" height="40">
+          <polygon points="8,34 22,6 30,6 16,34"></polygon>
+          <polygon points="24,34 38,6 46,6 32,34"></polygon>
+          <polygon points="40,34 54,6 62,6 48,34"></polygon>
+        </svg>
+      </span>
+    </div>
+  </header>
+
+  <!-- ===== Navegação ===== -->
+  <nav class="main-nav" aria-label="Navegação principal">
+    <ul class="container main-nav__list">
+      <li><a class="main-nav__link is-active" href="#cadastro">Cadastrar treino</a></li>
+      <li><a class="main-nav__link" href="#listagem">Meus treinos</a></li>
+      <li><a class="main-nav__link" href="#detalhes">Detalhes do treino</a></li>
     </ul>
   </nav>
 
- <main>
- 
-    <!-- Cadastro dos Treinos -->
-    <section id="cadastro">
-      <h2>Cadastrar treino</h2>
- 
-      <form action="#" method="post">
- 
-        <fieldset>
-          <legend>Dados do treino</legend>
- 
-          <p>
-            <label for="nome">Nome do treino:</label><br>
-            <input type="text" id="nome" name="nome" required>
-          </p>
- 
-          <p>
-            <label for="objetivo">Objetivo:</label><br>
-            <select id="objetivo" name="objetivo" required>
-              <option value="">Selecione</option>
-              <option value="hipertrofia">Hipertrofia</option>
-              <option value="emagrecimento">Emagrecimento</option>
-              <option value="forca">Força</option>
-              <option value="resistencia">Resistência</option>
-            </select>
-          </p>
- 
-          <p>
-            <label for="grupo">Grupo muscular:</label><br>
-            <select id="grupo" name="grupo" required>
-              <option value="">Selecione</option>
-              <option value="peito">Peito</option>
-              <option value="costas">Costas</option>
-              <option value="pernas">Pernas</option>
-              <option value="ombros">Ombros</option>
-              <option value="bracos">Braços</option>
-              <option value="abdomen">Abdômen</option>
-              <option value="corpo-inteiro">Corpo inteiro</option>
-            </select>
-          </p>
- 
-          <p>
-            <label for="duracao">Duração (minutos):</label><br>
-            <input type="number" id="duracao" name="duracao" min="1" max="300" required>
-          </p>
- 
-          <p>
-            <label for="data-inicio">Data de início:</label><br>
-            <input type="date" id="data-inicio" name="data-inicio" required>
-          </p>
- 
-          <p>
-            <label for="data-atualizacao">Data de atualização:</label><br>
-            <input type="date" id="data-atualizacao" name="data-atualizacao">
-          </p>
- 
-          <fieldset>
-            <legend>Nível de dificuldade</legend>
-            <input type="radio" id="nivel-iniciante" name="nivel" value="iniciante" required>
-            <label for="nivel-iniciante">Iniciante</label>
-            <input type="radio" id="nivel-intermediario" name="nivel" value="intermediario">
-            <label for="nivel-intermediario">Intermediário</label>
-            <input type="radio" id="nivel-avancado" name="nivel" value="avancado">
-            <label for="nivel-avancado">Avançado</label>
+  <main class="container main">
+
+    <!-- ===== Cadastro ===== -->
+    <section id="cadastro" class="card">
+      <h2 class="section-title">Cadastrar treino</h2>
+
+      <!-- Mensagem de estado (será exibida via JS na última etapa) -->
+      <p class="message message--success" role="status">Treino salvo com sucesso!</p>
+
+      <form class="form" action="#" method="post">
+        <div class="form-grid">
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Dados do treino</legend>
+
+            <div class="field">
+              <label class="field__label" for="nome">Nome do treino</label>
+              <input class="field__control" type="text" id="nome" name="nome"
+                     placeholder="Ex.: Treino A - Peito e Tríceps" required>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="objetivo">Objetivo</label>
+              <select class="field__control" id="objetivo" name="objetivo" required>
+                <option value="">Selecione</option>
+                <option value="hipertrofia">Hipertrofia</option>
+                <option value="emagrecimento">Emagrecimento</option>
+                <option value="forca">Força</option>
+                <option value="resistencia">Resistência</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="grupo">Grupo muscular</label>
+              <select class="field__control" id="grupo" name="grupo" required>
+                <option value="">Selecione</option>
+                <option value="peito">Peito</option>
+                <option value="costas">Costas</option>
+                <option value="pernas">Pernas</option>
+                <option value="ombros">Ombros</option>
+                <option value="bracos">Braços</option>
+                <option value="abdomen">Abdômen</option>
+                <option value="corpo-inteiro">Corpo inteiro</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="duracao">Duração (minutos)</label>
+              <input class="field__control" type="number" id="duracao" name="duracao" min="1" max="300" required>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field__label" for="data-inicio">Data de início</label>
+                <input class="field__control" type="date" id="data-inicio" name="data-inicio" required>
+              </div>
+              <div class="field">
+                <label class="field__label" for="data-atualizacao">Data de atualização</label>
+                <input class="field__control" type="date" id="data-atualizacao" name="data-atualizacao">
+              </div>
+            </div>
+
+            <fieldset class="radio-group">
+              <legend class="field__label">Nível de dificuldade</legend>
+              <label class="radio"><input type="radio" name="nivel" value="iniciante" required> Iniciante</label>
+              <label class="radio"><input type="radio" name="nivel" value="intermediario"> Intermediário</label>
+              <label class="radio"><input type="radio" name="nivel" value="avancado"> Avançado</label>
+            </fieldset>
+
+            <div class="field">
+              <label class="field__label" for="status">Status do treino</label>
+              <select class="field__control" id="status" name="status">
+                <option value="ativo">Ativo</option>
+                <option value="pausado">Pausado</option>
+                <option value="concluido">Concluído</option>
+              </select>
+            </div>
           </fieldset>
- 
-          <p>
-            <label for="status">Status do treino:</label><br>
-            <select id="status" name="status">
-              <option value="ativo">Ativo</option>
-              <option value="pausado">Pausado</option>
-              <option value="concluido">Concluído</option>
-            </select>
-          </p>
-        </fieldset>
- 
-        <fieldset>
-          <legend>Exercício</legend>
- 
-          <p>
-            <label for="exercicio">Nome do exercício:</label><br>
-            <input type="text" id="exercicio" name="exercicio" required>
-          </p>
- 
-          <p>
-            <label for="series">Séries:</label><br>
-            <input type="number" id="series" name="series" min="1" max="20" required>
-          </p>
- 
-          <p>
-            <label for="repeticoes">Repetições:</label><br>
-            <input type="number" id="repeticoes" name="repeticoes" min="1" max="100" required>
-          </p>
- 
-          <p>
-            <label for="carga">Carga (kg):</label><br>
-            <input type="number" id="carga" name="carga" min="0" step="0.5">
-          </p>
- 
-          <p>
-            <label for="descanso">Intervalo de descanso (segundos):</label><br>
-            <input type="number" id="descanso" name="descanso" min="0" max="600" step="15">
-          </p>
-        </fieldset>
- 
-        <p>
-          <label for="observacoes">Observações:</label><br>
-          <textarea id="observacoes" name="observacoes" rows="4" cols="40"></textarea>
-        </p>
- 
-        <p>
-          <button type="submit">Salvar treino</button>
-          <button type="reset">Limpar</button>
-        </p>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset__legend">Exercício</legend>
+
+            <div class="field">
+              <label class="field__label" for="exercicio">Nome do exercício</label>
+              <input class="field__control" type="text" id="exercicio" name="exercicio"
+                     placeholder="Ex.: Supino reto" required>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field__label" for="series">Séries</label>
+                <input class="field__control" type="number" id="series" name="series" min="1" max="20" required>
+              </div>
+              <div class="field">
+                <label class="field__label" for="repeticoes">Repetições</label>
+                <input class="field__control" type="number" id="repeticoes" name="repeticoes" min="1" max="100" required>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field__label" for="carga">Carga (kg)</label>
+                <input class="field__control" type="number" id="carga" name="carga" min="0" step="0.5">
+              </div>
+              <div class="field">
+                <label class="field__label" for="descanso">Descanso (s)</label>
+                <input class="field__control" type="number" id="descanso" name="descanso" min="0" max="600" step="15">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="observacoes">Observações</label>
+              <textarea class="field__control" id="observacoes" name="observacoes" rows="5"
+                        placeholder="Anotações sobre o treino..."></textarea>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--primary" type="submit">Salvar treino</button>
+          <button class="btn btn--ghost" type="reset">Limpar</button>
+        </div>
       </form>
     </section>
- 
-    <hr>
-    
-  <!-- Lista dos treinos para cada parte de corpo -->
-    <section id="listagem">
-      <h2>Meus treinos</h2>
- 
-      <form action="#" method="get">
-        <p>
-          <label for="pesquisa">Pesquisar:</label>
-          <input type="search" id="pesquisa" name="pesquisa" placeholder="Nome do treino">
-          <button type="button">Buscar</button>
-        </p>
- 
-        <p>
-          <label for="filtro-grupo">Grupo muscular:</label>
-          <select id="filtro-grupo" name="filtro-grupo">
+
+    <!-- ===== Listagem ===== -->
+    <section id="listagem" class="card">
+      <h2 class="section-title">Meus treinos</h2>
+
+      <form class="toolbar" action="#" method="get">
+        <div class="field toolbar__search">
+          <label class="field__label" for="pesquisa">Pesquisar</label>
+          <div class="search">
+            <input class="field__control" type="search" id="pesquisa" name="pesquisa" placeholder="Nome do treino">
+            <button class="btn btn--ghost" type="button">Buscar</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="filtro-grupo">Grupo muscular</label>
+          <select class="field__control" id="filtro-grupo" name="filtro-grupo">
             <option value="">Todos</option>
             <option value="peito">Peito</option>
             <option value="costas">Costas</option>
@@ -163,161 +193,164 @@
             <option value="abdomen">Abdômen</option>
             <option value="corpo-inteiro">Corpo inteiro</option>
           </select>
- 
-          <label for="filtro-status">Status:</label>
-          <select id="filtro-status" name="filtro-status">
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="filtro-status">Status</label>
+          <select class="field__control" id="filtro-status" name="filtro-status">
             <option value="">Todos</option>
             <option value="ativo">Ativo</option>
             <option value="pausado">Pausado</option>
             <option value="concluido">Concluído</option>
           </select>
-        </p>
- 
-        <p>
-          <label for="ordenar">Ordenar por:</label>
-          <select id="ordenar" name="ordenar">
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ordenar">Ordenar por</label>
+          <select class="field__control" id="ordenar" name="ordenar">
             <option value="nome">Nome</option>
             <option value="data-inicio">Data de início</option>
             <option value="duracao">Duração</option>
           </select>
-          <button type="button">Aplicar</button>
-        </p>
-      </form>
- 
-      <table border="1">
-        <caption>Lista de treinos cadastrados</caption>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Objetivo</th>
-            <th>Grupo muscular</th>
-            <th>Duração</th>
-            <th>Início</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Treino A - Peito e Tríceps</td>
-            <td>Hipertrofia</td>
-            <td>Peito</td>
-            <td>60 min</td>
-            <td>01/09/2026</td>
-            <td>Ativo</td>
-            <td>
-              <button type="button">Ver detalhes</button>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Treino B - Costas e Bíceps</td>
-            <td>Hipertrofia</td>
-            <td>Costas</td>
-            <td>55 min</td>
-            <td>01/09/2026</td>
-            <td>Ativo</td>
-            <td>
-              <button type="button">Ver detalhes</button>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Treino C - Pernas</td>
-            <td>Força</td>
-            <td>Pernas</td>
-            <td>70 min</td>
-            <td>15/08/2026</td>
-            <td>Concluído</td>
-            <td>
-              <button type="button">Ver detalhes</button>
-              <button type="button">Editar</button>
-              <button type="button">Excluir</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
- 
-    <hr>
+        </div>
 
-      <!-- Detalhes do Treino -->
-    <section id="detalhes">
-      <h2>Detalhes do treino</h2>
- 
-      <article>
-        <h3>Treino A - Peito e Tríceps</h3>
- 
-        <ul>
-          <li><strong>Objetivo:</strong> Hipertrofia</li>
-          <li><strong>Grupo muscular:</strong> Peito</li>
-          <li><strong>Duração:</strong> 60 minutos</li>
-          <li><strong>Data de início:</strong> 01/09/2026</li>
-          <li><strong>Data de atualização:</strong> 28/09/2026</li>
-          <li><strong>Nível de dificuldade:</strong> Intermediário</li>
-          <li><strong>Status:</strong> Ativo</li>
-          <li><strong>Observações:</strong> Aumentar a carga do supino na próxima semana.</li>
-        </ul>
- 
-        <h4>Exercícios</h4>
-        <table border="1">
+        <button class="btn btn--primary toolbar__apply" type="button">Aplicar</button>
+      </form>
+
+      <div class="table-wrap">
+        <table class="table">
+          <caption class="sr-only">Lista de treinos cadastrados</caption>
           <thead>
             <tr>
-              <th>Exercício</th>
-              <th>Séries</th>
-              <th>Repetições</th>
-              <th>Carga</th>
-              <th>Descanso</th>
+              <th>Nome</th>
+              <th>Objetivo</th>
+              <th>Grupo</th>
+              <th>Duração</th>
+              <th>Início</th>
+              <th>Status</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Supino reto</td>
-              <td>4</td>
-              <td>10</td>
-              <td>40 kg</td>
-              <td>90 s</td>
+              <td>Treino A - Peito e Tríceps</td>
+              <td>Hipertrofia</td>
+              <td>Peito</td>
+              <td>60 min</td>
+              <td>01/09/2026</td>
+              <td><span class="badge badge--ativo">Ativo</span></td>
+              <td class="row-actions">
+                <button class="btn btn--sm" type="button">Detalhes</button>
+                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
+                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
+              </td>
             </tr>
             <tr>
-              <td>Supino inclinado</td>
-              <td>3</td>
-              <td>12</td>
-              <td>30 kg</td>
-              <td>60 s</td>
+              <td>Treino B - Costas e Bíceps</td>
+              <td>Hipertrofia</td>
+              <td>Costas</td>
+              <td>55 min</td>
+              <td>01/09/2026</td>
+              <td><span class="badge badge--ativo">Ativo</span></td>
+              <td class="row-actions">
+                <button class="btn btn--sm" type="button">Detalhes</button>
+                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
+                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
+              </td>
             </tr>
             <tr>
-              <td>Tríceps corda</td>
-              <td>4</td>
-              <td>12</td>
-              <td>25 kg</td>
-              <td>60 s</td>
+              <td>Treino C - Pernas</td>
+              <td>Força</td>
+              <td>Pernas</td>
+              <td>70 min</td>
+              <td>15/08/2026</td>
+              <td><span class="badge badge--concluido">Concluído</span></td>
+              <td class="row-actions">
+                <button class="btn btn--sm" type="button">Detalhes</button>
+                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
+                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
+              </td>
             </tr>
           </tbody>
         </table>
- 
-        <p>
-          <button type="button">Editar</button>
-          <button type="button">Excluir</button>
-        </p>
+      </div>
+    </section>
+
+    <!-- ===== Detalhes ===== -->
+    <section id="detalhes" class="card">
+      <h2 class="section-title">Detalhes do treino</h2>
+
+      <article class="details">
+        <div class="details__head">
+          <h3 class="details__title">Treino A - Peito e Tríceps</h3>
+          <span class="badge badge--ativo">Ativo</span>
+        </div>
+
+        <dl class="details__grid">
+          <div class="details__item"><dt>Objetivo</dt><dd>Hipertrofia</dd></div>
+          <div class="details__item"><dt>Grupo muscular</dt><dd>Peito</dd></div>
+          <div class="details__item"><dt>Duração</dt><dd>60 minutos</dd></div>
+          <div class="details__item"><dt>Data de início</dt><dd>01/09/2026</dd></div>
+          <div class="details__item"><dt>Data de atualização</dt><dd>28/09/2026</dd></div>
+          <div class="details__item"><dt>Nível</dt><dd>Intermediário</dd></div>
+        </dl>
+
+        <p class="note"><strong>Observações:</strong> Aumentar a carga do supino na próxima semana.</p>
+
+        <h4 class="details__subtitle">Exercícios</h4>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Exercício</th>
+                <th>Séries</th>
+                <th>Repetições</th>
+                <th>Carga</th>
+                <th>Descanso</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Supino reto</td><td>4</td><td>10</td><td>40 kg</td><td>90 s</td></tr>
+              <tr><td>Supino inclinado</td><td>3</td><td>12</td><td>30 kg</td><td>60 s</td></tr>
+              <tr><td>Tríceps corda</td><td>4</td><td>12</td><td>25 kg</td><td>60 s</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--ghost" type="button">Editar</button>
+          <button class="btn btn--danger" type="button">Excluir</button>
+        </div>
       </article>
     </section>
- 
+
+    <!-- ===== Resumo ===== -->
+    <aside id="resumo" class="card">
+      <h2 class="section-title">Resumo</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat__label">Total de treinos</span>
+          <span class="stat__value">3</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">Ativos</span>
+          <span class="stat__value stat__value--accent">2</span>
+        </div>
+        <div class="stat">
+          <span class="stat__label">Concluídos</span>
+          <span class="stat__value">1</span>
+        </div>
+      </div>
+    </aside>
+
   </main>
- 
-  <aside>
-    <h2>Resumo</h2>
-    <ul>
-      <li>Total de treinos: 3</li>
-      <li>Ativos: 2</li>
-      <li>Concluídos: 1</li>
-    </ul>
-  </aside>
- 
-  <footer>
-    <p>Meu Treino - Etapa 1: HTML e Estrutura da Interface</p>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Meu Treino — Etapa 2: CSS, Layout e Responsividade</p>
+    </div>
   </footer>
 
+  <script src="assets/js/script.js"></script>
 </body>
 </html>

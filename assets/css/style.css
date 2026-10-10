@@ -1,0 +1,21 @@
+/* ============= 1. VARIÁVEIS – identidade visual ============= */
+/* :root guarda as cores e medidas do sistema em um lugar só. */
+:root {
+  --cor-fundo: #0d0f0c;
+  --cor-superficie: #16181500;      /* usado via rgba abaixo */
+  --cor-card: #161815;
+  --cor-card-2: #1d201b;
+  --cor-borda: #2a2e26;
+  --cor-texto: #e8ece3;
+  --cor-texto-suave: #9aa093;
+  --cor-acento: #c3f53c;            /* verde-limão */
+  --cor-acento-escuro: #a6d82f;
+  --cor-perigo: #ff6b6b;
+ 
+  --raio: 12px;
+  --raio-sm: 8px;
+  --espaco: 16px;
+  --largura-max: 1080px;
+ 
+  --fonte: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
