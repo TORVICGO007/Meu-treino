@@ -152,3 +152,203 @@ a { color: inherit; text-decoration: none; }
   border-color: rgba(195, 245, 60, 0.25);
 }
 
+/* ============ 5. ESTRUTURA PRINCIPAL, CARTÕES E TÍTULOS ============ */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;                        /* espaçamento entre seções */
+  padding-block: 28px;
+}
+ 
+.card {
+  background-color: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);       /* bordas arredondadas */
+  padding: clamp(16px, 2vw, 28px);  /* Box Model: padding interno */
+}
+ 
+.section-title {
+  font-size: 1.3rem;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+ 
+/* Mensagem / estado de interação */
+.message {
+  padding: 12px 14px;
+  border-radius: var(--raio-sm);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+}
+.message--success {
+  color: var(--cor-acento);
+  background-color: rgba(195, 245, 60, 0.08);
+  border-color: rgba(195, 245, 60, 0.25);
+}
+ 
+/* ============ 6. FORMULÁRIO (CSS GRID) ============ */
+/* Duas colunas no desktop (os dois fieldsets lado a lado). */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;       /* mobile-first: 1 coluna */
+  gap: 24px;
+}
+ 
+.fieldset {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  padding: 20px;
+  min-width: 0;   /* fieldset não encolhe por padrão; isto corrige overflow */
+}
+.fieldset__legend {
+  padding: 0 8px;
+  font-weight: 600;
+  color: var(--cor-acento);
+  font-size: 0.95rem;
+}
+ 
+/* Cada campo empilhado com rótulo em cima */
+.field { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; min-width: 0; }
+.field:first-of-type { margin-top: 10px; }
+.field__label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+ 
+/* Dois campos lado a lado (Grid) */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+ 
+/* Controles de formulário */
+.field__control {
+  width: 100%;
+  min-width: 0;   /* permite o campo encolher dentro do grid/flex */
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--cor-texto);
+  background-color: var(--cor-card-2);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  padding: 10px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field__control::placeholder { color: #6c7165; }
+textarea.field__control { resize: vertical; min-height: 110px; }
+ 
+/* Estado de foco (acessibilidade: indicação visual clara) */
+.field__control:focus {
+  outline: none;
+  border-color: var(--cor-acento);
+  box-shadow: 0 0 0 3px rgba(195, 245, 60, 0.2);
+}
+ 
+/* Grupo de rádios com Flexbox */
+.radio-group {
+  border: 0;
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+.radio { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+.radio input { accent-color: var(--cor-acento); }
+ 
+/* ============ 7. BOTÕES E ESTADOS ============ */
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+ 
+.btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-card-2);
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: transform 0.08s, background-color 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.btn:hover { border-color: var(--cor-texto-suave); }
+.btn:active { transform: translateY(1px); }     /* estado :active */
+.btn:focus-visible {                              /* foco por teclado */
+  outline: 2px solid var(--cor-acento);
+  outline-offset: 2px;
+}
+ 
+.btn--primary {
+  background-color: var(--cor-acento);
+  border-color: var(--cor-acento);
+  color: #11140b;                                 /* texto escuro = bom contraste */
+}
+.btn--primary:hover { background-color: var(--cor-acento-escuro); border-color: var(--cor-acento-escuro); }
+ 
+.btn--ghost { background-color: transparent; }
+ 
+.btn--danger { color: var(--cor-perigo); border-color: rgba(255, 107, 107, 0.4); background-color: transparent; }
+.btn--danger:hover { background-color: rgba(255, 107, 107, 0.1); border-color: var(--cor-perigo); }
+ 
+.btn--sm { padding: 6px 10px; font-size: 0.8rem; }
+ 
+/* ============ 8. LISTAGEM: TOOLBAR + TABELA ============ */
+/* Toolbar com Grid responsivo: colunas que se encaixam sozinhas */
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 22px;
+}
+.search { display: flex; gap: 8px; }
+.search .field__control { flex: 1; }             /* input cresce, botão fica fixo */
+ 
+/* table-wrap permite rolagem SÓ da tabela em telas pequenas,
+   evitando rolagem horizontal da página inteira. */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;                 /* abaixo disso, a tabela rola dentro do wrap */
+  font-size: 0.9rem;
+}
+.table th, .table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cor-borda);
+  white-space: nowrap;
+}
+.table thead th {
+  background-color: var(--cor-card-2);
+  color: var(--cor-texto-suave);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.table tbody tr:hover { background-color: rgba(255, 255, 255, 0.025); }  /* estado hover na linha */
+.table tbody tr:last-child td { border-bottom: 0; }
+ 
+.row-actions { display: flex; gap: 6px; }
+ 
+/* Badges de status */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.badge--ativo { color: var(--cor-acento); background: rgba(195,245,60,0.1); border-color: rgba(195,245,60,0.3); }
+.badge--concluido { color: var(--cor-texto-suave); background: rgba(255,255,255,0.05); border-color: var(--cor-borda); }
