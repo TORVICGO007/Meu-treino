@@ -409,3 +409,28 @@ textarea.field__control { resize: vertical; min-height: 110px; }
   color: var(--cor-texto-suave);
   font-size: 0.85rem;
 }
+
+/* ============ 11. RESPONSIVIDADE (MEDIA QUERIES) ============ */
+/* Mobile-first: o que está acima é para telas pequenas.
+   Aqui ampliamos o layout conforme a tela cresce. */
+ 
+/* Tablet em diante: campos da toolbar em 2 colunas */
+@media (min-width: 640px) {
+  .toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .toolbar__search { grid-column: 1 / -1; }   /* pesquisa ocupa a linha toda */
+}
+ 
+/* Desktop: formulário em 2 colunas e toolbar em 4 */
+@media (min-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .toolbar {
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    align-items: end;
+  }
+  .toolbar__search { grid-column: auto; }
+  .toolbar__apply { height: 42px; }
+}
