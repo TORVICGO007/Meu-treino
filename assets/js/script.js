@@ -141,6 +141,40 @@ lista.addEventListener("click", function (evento) {
   mostrarMensagem("Treino excluído.");
 });
 
-/* ===== 10. INÍCIO: ao abrir a página, carrega o que estava salvo ===== */
+/* ===== 10. TREINOS DE EXEMPLO (só na primeira vez que a página abre) ===== */
+const TREINOS_EXEMPLO = [
+  { id: "ex1", nome: "Treino A - Peito e Tríceps", objetivo: "hipertrofia", grupo: "peito",
+    duracao: "60", dataInicio: "2026-09-01", dataAtualizacao: "2026-09-28", nivel: "intermediario",
+    status: "ativo", observacoes: "Aumentar a carga do supino na próxima semana.",
+    exercicio: { nome: "Supino reto", series: "4", repeticoes: "10", carga: "40", descanso: "90" } },
+
+  { id: "ex2", nome: "Treino B - Costas e Bíceps", objetivo: "hipertrofia", grupo: "costas",
+    duracao: "55", dataInicio: "2026-09-01", dataAtualizacao: "", nivel: "intermediario",
+    status: "ativo", observacoes: "",
+    exercicio: { nome: "Puxada frontal", series: "4", repeticoes: "12", carga: "50", descanso: "60" } },
+
+  { id: "ex3", nome: "Treino C - Pernas", objetivo: "forca", grupo: "pernas",
+    duracao: "70", dataInicio: "2026-08-15", dataAtualizacao: "", nivel: "avancado",
+    status: "concluido", observacoes: "Progressão de carga no agachamento.",
+    exercicio: { nome: "Agachamento livre", series: "4", repeticoes: "8", carga: "80", descanso: "120" } },
+
+  { id: "ex4", nome: "Treino D - Ombros", objetivo: "resistencia", grupo: "ombros",
+    duracao: "45", dataInicio: "2026-10-05", dataAtualizacao: "", nivel: "iniciante",
+    status: "pausado", observacoes: "",
+    exercicio: { nome: "Desenvolvimento militar", series: "3", repeticoes: "15", carga: "20", descanso: "45" } }
+];
+
+// Preenche a lista com os exemplos APENAS na primeira visita (nunca repete).
+function semearExemplos() {
+  const jaSemeou = localStorage.getItem("meu-treino:semeado");
+  if (!jaSemeou && treinos.length === 0) {
+    treinos = TREINOS_EXEMPLO.slice();   // cria uma cópia dos exemplos
+    salvarNoStorage();
+  }
+  localStorage.setItem("meu-treino:semeado", "sim"); // marca que já semeou uma vez
+}
+
+/* ===== 11. INÍCIO: ao abrir a página, carrega os dados e desenha a tela ===== */
 carregarDoStorage();
+semearExemplos();   // na primeira vez, insere os treinos de exemplo
 renderizarLista();
