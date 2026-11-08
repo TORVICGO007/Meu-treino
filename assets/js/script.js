@@ -123,10 +123,15 @@ function atualizarResumo() {
 }
 
 /* ===== 7. FEEDBACK ===== */
-function mostrarMensagem(texto) {
+function mostrarMensagem(texto, tipo) {
   mensagem.textContent = texto;
+  // escolhe a cor: verde para sucesso, vermelho para erro
+  mensagem.className = "message " + (tipo === "erro" ? "message--erro" : "message--success");
   mensagem.hidden = false;
-  setTimeout(function () { mensagem.hidden = true; }, 3500);
+  // sucesso some sozinho; erro fica até a próxima ação (para o usuário ler)
+  if (tipo !== "erro") {
+    setTimeout(function () { mensagem.hidden = true; }, 3500);
+  }
 }
 
 /* ===== 8. LER O FORMULÁRIO (monta um objeto treino, sem id) ===== */
@@ -151,10 +156,48 @@ function lerFormulario() {
   };
 }
 
+/* ===== 8B. VALIDAÇÃO DO FORMULÁRIO (em JavaScript) =====
+   Retorna uma lista com os rótulos dos campos obrigatórios que ficaram
+   vazios (lista vazia = tudo certo) e marca esses campos em vermelho. */
+function validarFormulario(dados) {
+  const erros = [];
+  // limpa as marcações da tentativa anterior
+  document.querySelectorAll(".campo-invalido").forEach(function (el) { el.classList.remove("campo-invalido"); });
+
+  function exigir(valor, idCampo, rotulo) {
+    if (!valor) {
+      erros.push(rotulo);
+      if (idCampo) {
+        const el = document.getElementById(idCampo);
+        if (el) el.classList.add("campo-invalido");
+      }
+    }
+  }
+
+  exigir(dados.nome,                 "nome",        "nome do treino");
+  exigir(dados.objetivo,             "objetivo",    "objetivo");
+  exigir(dados.grupo,                "grupo",        "grupo muscular");
+  exigir(dados.duracao,              "duracao",      "duração");
+  exigir(dados.dataInicio,            "data-inicio", "data de início");
+  exigir(dados.nivel,                null,          "nível de dificuldade");
+  exigir(dados.exercicio.nome,        "exercicio",  "nome do exercício");
+  exigir(dados.exercicio.series,      "series",      "séries");
+  exigir(dados.exercicio.repeticoes,  "repeticoes",  "repetições");
+
+  return erros;
+}
+
 /* ===== 9. CADASTRAR ou ATUALIZAR (um mesmo formulário faz os dois) ===== */
 form.addEventListener("submit", function (evento) {
   evento.preventDefault();
   const dados = lerFormulario();
+
+  // Valida antes de salvar. Se houver erro, avisa e para aqui.
+  const erros = validarFormulario(dados);
+  if (erros.length > 0) {
+    mostrarMensagem("Preencha os campos obrigatórios: " + erros.join(", ") + ".", "erro");
+    return;
+  }
 
   if (idEmEdicao) {
     // --- modo edição: atualiza o treino existente ---

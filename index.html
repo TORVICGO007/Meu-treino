@@ -49,10 +49,11 @@
     <section id="cadastro" class="card">
       <h2 class="section-title">Cadastrar treino</h2>
 
-      <!-- Mensagem de estado (controlada pelo JavaScript) -->
-      <p class="message message--success" id="mensagem" role="status" hidden>Treino salvo com sucesso!</p>
+      <!-- Mensagem de estado (controlada pelo JavaScript: sucesso ou erro) -->
+      <p class="message" id="mensagem" role="status" hidden></p>
 
-      <form class="form" id="form-treino" action="#" method="post">
+      <!-- novalidate: desliga o aviso padrão do navegador para usarmos a validação em JavaScript -->
+      <form class="form" id="form-treino" action="#" method="post" novalidate>
         <div class="form-grid">
 
           <fieldset class="fieldset">
