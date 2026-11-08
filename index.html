@@ -127,8 +127,13 @@
 
             <div class="field">
               <label class="field__label" for="exercicio">Nome do exercício</label>
-              <input class="field__control" type="text" id="exercicio" name="exercicio"
-                     placeholder="Ex.: Supino reto" required>
+              <div class="search">
+                <input class="field__control" type="text" id="exercicio" name="exercicio"
+                       placeholder="Ex.: Supino reto" required>
+                <button class="btn btn--ghost" type="button" id="btn-buscar-exercicio">Buscar na API</button>
+              </div>
+              <!-- Resultados da busca na API Wger (preenchidos pelo JavaScript) -->
+              <div class="api-resultados" id="resultados-exercicio" hidden></div>
             </div>
 
             <div class="field-row">

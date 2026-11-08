@@ -296,6 +296,64 @@ document.getElementById("toolbar").addEventListener("click", function (e) {
   if (e.target.tagName === "BUTTON") { e.preventDefault(); renderizarLista(); }
 });
 
+/* ===== 11C. CONSUMO DE API (Wger) — busca de exercícios =====
+   O campo "Nome do exercício" ganha um botão que consulta a API pública
+   da Wger. Os exercícios retornados (dados EXTERNOS) viram opções; ao
+   escolher um, o nome preenche o campo e é salvo junto do treino no
+   localStorage (dados DO SISTEMA). */
+const campoExercicio    = document.getElementById("exercicio");
+const painelResultados  = document.getElementById("resultados-exercicio");
+
+function mostrarResultadosApi(html) {
+  painelResultados.innerHTML = html;
+  painelResultados.hidden = false;
+}
+
+async function buscarExerciciosApi() {
+  const termo = campoExercicio.value.trim();
+  if (termo.length < 2) {
+    mostrarResultadosApi('<p class="api-aviso">Digite ao menos 2 letras para buscar.</p>');
+    return;
+  }
+  mostrarResultadosApi('<p class="api-aviso">Buscando exercícios na Wger...</p>');
+
+  try {
+    const url = "https://wger.de/api/v2/exercise/search/?language=english&format=json&term=" + encodeURIComponent(termo);
+    const resposta = await fetch(url);
+    if (!resposta.ok) throw new Error("Status " + resposta.status);
+
+    const dados = await resposta.json();
+    const sugestoes = dados.suggestions || [];
+
+    if (sugestoes.length === 0) {
+      mostrarResultadosApi('<p class="api-aviso">Nenhum exercício encontrado. Você pode digitar o nome manualmente.</p>');
+      return;
+    }
+
+    let html = "";
+    sugestoes.slice(0, 8).forEach(function (s) {
+      const nome = s.value;
+      const categoria = (s.data && s.data.category) ? " — " + s.data.category : "";
+      html += '<button type="button" class="api-item" data-nome="' + nome.replace(/"/g, "&quot;") + '">' +
+              nome + categoria + "</button>";
+    });
+    mostrarResultadosApi(html);
+  } catch (erro) {
+    mostrarResultadosApi('<p class="api-aviso">Não foi possível buscar agora. Digite o nome do exercício manualmente.</p>');
+  }
+}
+
+document.getElementById("btn-buscar-exercicio").addEventListener("click", buscarExerciciosApi);
+
+// Escolher um exercício da lista preenche o campo e fecha os resultados.
+painelResultados.addEventListener("click", function (evento) {
+  const item = evento.target.closest(".api-item");
+  if (!item) return;
+  campoExercicio.value = item.dataset.nome;
+  painelResultados.hidden = true;
+  painelResultados.innerHTML = "";
+});
+
 /* ===== 12. TREINOS DE EXEMPLO (só na primeira vez que a página abre) ===== */
 const TREINOS_EXEMPLO = [
   { id: "ex1", nome: "Treino A - Peito e Tríceps", objetivo: "hipertrofia", grupo: "peito",
@@ -320,12 +378,12 @@ const TREINOS_EXEMPLO = [
 ];
 
 function semearExemplos() {
-  const jaSemeou = localStorage.getItem("meu-treino:semeado");
+  const jaSemeou = localStorage.getItem("meu-treino:semeado-v2");
   if (!jaSemeou && treinos.length === 0) {
     treinos = TREINOS_EXEMPLO.slice();
     salvarNoStorage();
   }
-  localStorage.setItem("meu-treino:semeado", "sim");
+  localStorage.setItem("meu-treino:semeado-v2", "sim");
 }
 
 /* ===== 13. INÍCIO ===== */
