@@ -1,14 +1,15 @@
 /* =====================================================================
    MEU TREINO — Etapa 3 (JavaScript)
-   Parte 1 (base): cadastro, listagem dinâmica, localStorage e exclusão.
+   Funcionalidades até aqui: cadastro, listagem dinâmica, localStorage,
+   exclusão, treinos de exemplo, DETALHES e EDIÇÃO.
    ===================================================================== */
 
-/* ===== 1. ESTADO: a lista de treinos que a aplicação mantém em memória ===== */
-let treinos = [];                                 // array de objetos "treino"
-const CHAVE_STORAGE = "meu-treino:treinos";       // nome da "gaveta" no localStorage
+/* ===== 1. ESTADO ===== */
+let treinos = [];                                 // a lista de treinos (fonte da verdade)
+let idEmEdicao = null;                            // guarda o id do treino sendo editado
+const CHAVE_STORAGE = "meu-treino:treinos";       // "gaveta" dos treinos no localStorage
 
-/* Mapas para transformar o valor do formulário em um rótulo bonito na tela.
-   Ex.: no formulário o objetivo vale "forca", mas mostramos "Força". */
+/* Mapas valor -> rótulo bonito (ex.: "forca" vira "Força"). */
 const rotulos = {
   objetivo: { hipertrofia: "Hipertrofia", emagrecimento: "Emagrecimento", forca: "Força", resistencia: "Resistência" },
   grupo:    { peito: "Peito", costas: "Costas", pernas: "Pernas", ombros: "Ombros", bracos: "Braços", abdomen: "Abdômen", "corpo-inteiro": "Corpo inteiro" },
@@ -17,46 +18,84 @@ const rotulos = {
 };
 
 /* ===== 2. ELEMENTOS DA PÁGINA (DOM) ===== */
-const form      = document.getElementById("form-treino");
-const lista      = document.getElementById("lista-treinos");   // <tbody> da tabela
-const mensagem  = document.getElementById("mensagem");         // feedback de sucesso
+const form              = document.getElementById("form-treino");
+const lista              = document.getElementById("lista-treinos");       // <tbody>
+const mensagem          = document.getElementById("mensagem");             // feedback
+const painelDetalhes    = document.getElementById("detalhes-conteudo");    // área de detalhes
+const botaoSalvar        = document.querySelector('#form-treino button[type="submit"]');
 
-/* ===== 3. LOCALSTORAGE (persistência) ===== */
-// Guarda a lista inteira como texto (JSON) na "gaveta" do navegador.
+/* ===== 3. LOCALSTORAGE ===== */
 function salvarNoStorage() {
   localStorage.setItem(CHAVE_STORAGE, JSON.stringify(treinos));
 }
-// Recupera a lista salva (ou começa vazia se não houver nada).
 function carregarDoStorage() {
   const dados = localStorage.getItem(CHAVE_STORAGE);
   treinos = dados ? JSON.parse(dados) : [];
 }
 
-/* ===== 4. AUXILIARES DE EXIBIÇÃO ===== */
-// Converte "2026-11-08" (do input date) para "08/11/2026".
+/* ===== 4. AUXILIARES ===== */
 function formatarData(iso) {
   if (!iso) return "-";
   const [ano, mes, dia] = iso.split("-");
   return dia + "/" + mes + "/" + ano;
 }
-// Escolhe a cor da etiqueta de status.
 function classeBadge(status) {
   return status === "ativo" ? "badge--ativo" : "badge--concluido";
 }
+// Data de hoje no formato "AAAA-MM-DD" (usada ao editar).
+function hojeISO() {
+  const d = new Date();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return d.getFullYear() + "-" + mes + "-" + dia;
+}
 
-/* ===== 5. RENDERIZAÇÃO: desenha a tabela a partir do array ===== */
+/* ===== 5A. PESQUISA + FILTROS + ORDENAÇÃO =====
+   Monta a lista que vai aparecer na tabela aplicando o que está nos
+   campos de pesquisa, filtro e ordenação — SEM alterar o array
+   original "treinos" (que continua sendo a fonte da verdade). */
+function obterListaVisivel() {
+  const termo  = document.getElementById("pesquisa").value.trim().toLowerCase();
+  const grupo  = document.getElementById("filtro-grupo").value;
+  const status = document.getElementById("filtro-status").value;
+  const ordem  = document.getElementById("ordenar").value;
+
+  // 1) PESQUISA e FILTROS: mantém só os treinos que casam com TUDO.
+  let visiveis = treinos.filter(function (t) {
+    const casaPesquisa = t.nome.toLowerCase().includes(termo);     // nome contém o texto
+    const casaGrupo    = grupo === ""  || t.grupo === grupo;        // grupo escolhido
+    const casaStatus   = status === "" || t.status === status;      // status escolhido
+    return casaPesquisa && casaGrupo && casaStatus;
+  });
+
+  // 2) ORDENAÇÃO: reordena conforme o campo escolhido.
+  visiveis.sort(function (a, b) {
+    if (ordem === "nome")        return a.nome.localeCompare(b.nome, "pt-BR");   // A -> Z
+    if (ordem === "data-inicio") return a.dataInicio.localeCompare(b.dataInicio); // mais antigo -> recente
+    if (ordem === "duracao")     return Number(a.duracao) - Number(b.duracao);   // menor -> maior
+    return 0;
+  });
+
+  return visiveis;
+}
+
+/* ===== 5B. RENDERIZAÇÃO DA LISTAGEM ===== */
 function renderizarLista() {
-  lista.innerHTML = "";                            // limpa o que estava na tabela
+  const visiveis = obterListaVisivel();
+  lista.innerHTML = "";
 
-  // Estado vazio: nenhum treino cadastrado ainda.
   if (treinos.length === 0) {
     lista.innerHTML = '<tr><td colspan="7">Nenhum treino cadastrado ainda.</td></tr>';
     atualizarResumo();
     return;
   }
+  if (visiveis.length === 0) {
+    lista.innerHTML = '<tr><td colspan="7">Nenhum treino encontrado com esses critérios.</td></tr>';
+    atualizarResumo();
+    return;
+  }
 
-  // Para cada treino do array, cria uma linha <tr> na tabela.
-  treinos.forEach(function (t) {
+  visiveis.forEach(function (t) {
     const tr = document.createElement("tr");
     tr.innerHTML =
       "<td>" + t.nome + "</td>" +
@@ -76,31 +115,23 @@ function renderizarLista() {
   atualizarResumo();
 }
 
-/* ===== 6. RESUMO: conta os treinos por status ===== */
+/* ===== 6. RESUMO ===== */
 function atualizarResumo() {
-  const total      = treinos.length;
-  const ativos      = treinos.filter(function (t) { return t.status === "ativo"; }).length;
-  const concluidos = treinos.filter(function (t) { return t.status === "concluido"; }).length;
-
-  document.getElementById("resumo-total").textContent      = total;
-  document.getElementById("resumo-ativos").textContent      = ativos;
-  document.getElementById("resumo-concluidos").textContent = concluidos;
+  document.getElementById("resumo-total").textContent      = treinos.length;
+  document.getElementById("resumo-ativos").textContent      = treinos.filter(function (t) { return t.status === "ativo"; }).length;
+  document.getElementById("resumo-concluidos").textContent = treinos.filter(function (t) { return t.status === "concluido"; }).length;
 }
 
-/* ===== 7. FEEDBACK: mostra a mensagem por alguns segundos ===== */
+/* ===== 7. FEEDBACK ===== */
 function mostrarMensagem(texto) {
   mensagem.textContent = texto;
   mensagem.hidden = false;
-  setTimeout(function () { mensagem.hidden = true; }, 3000);
+  setTimeout(function () { mensagem.hidden = true; }, 3500);
 }
 
-/* ===== 8. CADASTRO: lê o formulário e adiciona um treino ===== */
-form.addEventListener("submit", function (evento) {
-  evento.preventDefault();                         // impede a página de recarregar
-
-  // Monta o objeto "treino" com o que foi digitado.
-  const novo = {
-    id: Date.now().toString(),                     // identificador único
+/* ===== 8. LER O FORMULÁRIO (monta um objeto treino, sem id) ===== */
+function lerFormulario() {
+  return {
     nome:            document.getElementById("nome").value.trim(),
     objetivo:        document.getElementById("objetivo").value,
     grupo:            document.getElementById("grupo").value,
@@ -118,30 +149,154 @@ form.addEventListener("submit", function (evento) {
       descanso:    document.getElementById("descanso").value
     }
   };
+}
 
-  treinos.push(novo);                              // 1. adiciona na lista
-  salvarNoStorage();                               // 2. salva no navegador
-  renderizarLista();                               // 3. redesenha a tabela
-  form.reset();                                    // 4. limpa o formulário
-  mostrarMensagem("Treino salvo com sucesso!");    // 5. avisa o usuário
+/* ===== 9. CADASTRAR ou ATUALIZAR (um mesmo formulário faz os dois) ===== */
+form.addEventListener("submit", function (evento) {
+  evento.preventDefault();
+  const dados = lerFormulario();
+
+  if (idEmEdicao) {
+    // --- modo edição: atualiza o treino existente ---
+    const i = treinos.findIndex(function (t) { return t.id === idEmEdicao; });
+    if (i >= 0) {
+      dados.id = idEmEdicao;                       // mantém o mesmo id
+      dados.dataAtualizacao = hojeISO();            // marca a data de atualização
+      treinos[i] = dados;                           // substitui no lugar
+    }
+    mostrarMensagem("Treino atualizado com sucesso!");
+    sairDoModoEdicao();
+  } else {
+    // --- modo cadastro: cria um novo treino ---
+    dados.id = Date.now().toString();
+    treinos.push(dados);
+    mostrarMensagem("Treino salvo com sucesso!");
+  }
+
+  salvarNoStorage();
+  renderizarLista();
+  form.reset();
 });
 
-/* ===== 9. EXCLUIR: remove um treino (delegação de eventos) =====
-   Em vez de um "ouvinte" por botão, colocamos UM só na tabela e
-   descobrimos qual botão foi clicado. Assim funciona até para as
-   linhas criadas depois. */
-lista.addEventListener("click", function (evento) {
-  const botao = evento.target.closest('button[data-acao="excluir"]');
-  if (!botao) return;                              // clicou em outra coisa
+// Clicar em "Limpar" durante a edição também cancela o modo edição.
+form.addEventListener("reset", function () { sairDoModoEdicao(); });
 
-  const id = botao.dataset.id;
+/* ===== 10. AÇÕES: excluir, editar e ver detalhes ===== */
+function excluirTreino(id) {
   treinos = treinos.filter(function (t) { return t.id !== id; });
   salvarNoStorage();
   renderizarLista();
+  painelDetalhes.innerHTML = '<p class="note">Selecione um treino na listagem para ver os detalhes.</p>';
   mostrarMensagem("Treino excluído.");
+}
+
+function editarTreino(id) {
+  const t = treinos.find(function (x) { return x.id === id; });
+  if (!t) return;
+
+  // Preenche o formulário com os dados do treino.
+  document.getElementById("nome").value            = t.nome;
+  document.getElementById("objetivo").value        = t.objetivo;
+  document.getElementById("grupo").value            = t.grupo;
+  document.getElementById("duracao").value          = t.duracao;
+  document.getElementById("data-inicio").value      = t.dataInicio;
+  document.getElementById("data-atualizacao").value = t.dataAtualizacao;
+  document.getElementById("status").value          = t.status;
+  document.getElementById("observacoes").value      = t.observacoes;
+  const radio = document.querySelector('input[name="nivel"][value="' + t.nivel + '"]');
+  if (radio) radio.checked = true;
+
+  const ex = t.exercicio || {};
+  document.getElementById("exercicio").value  = ex.nome || "";
+  document.getElementById("series").value      = ex.series || "";
+  document.getElementById("repeticoes").value  = ex.repeticoes || "";
+  document.getElementById("carga").value      = ex.carga || "";
+  document.getElementById("descanso").value    = ex.descanso || "";
+
+  // Entra no "modo edição".
+  idEmEdicao = id;
+  botaoSalvar.textContent = "Salvar alterações";
+  document.getElementById("cadastro").scrollIntoView({ behavior: "smooth" });
+  mostrarMensagem('Editando "' + t.nome + '". Altere os campos e clique em Salvar alterações.');
+}
+
+function sairDoModoEdicao() {
+  idEmEdicao = null;
+  botaoSalvar.textContent = "Salvar treino";
+}
+
+// monta um par rótulo/valor para o painel de detalhes
+function itemDetalhe(rotulo, valor) {
+  return '<div class="details__item"><dt>' + rotulo + "</dt><dd>" + valor + "</dd></div>";
+}
+
+function mostrarDetalhes(id) {
+  const t = treinos.find(function (x) { return x.id === id; });
+  if (!t) return;
+  const ex = t.exercicio || {};
+
+  painelDetalhes.innerHTML =
+    '<div class="details__head">' +
+      '<h3 class="details__title">' + t.nome + "</h3>" +
+      '<span class="badge ' + classeBadge(t.status) + '">' + (rotulos.status[t.status] || t.status) + "</span>" +
+    "</div>" +
+    '<dl class="details__grid">' +
+      itemDetalhe("Objetivo", rotulos.objetivo[t.objetivo] || t.objetivo) +
+      itemDetalhe("Grupo muscular", rotulos.grupo[t.grupo] || t.grupo) +
+      itemDetalhe("Duração", t.duracao + " minutos") +
+      itemDetalhe("Data de início", formatarData(t.dataInicio)) +
+      itemDetalhe("Data de atualização", formatarData(t.dataAtualizacao)) +
+      itemDetalhe("Nível", rotulos.nivel[t.nivel] || t.nivel || "-") +
+    "</dl>" +
+    (t.observacoes ? '<p class="note"><strong>Observações:</strong> ' + t.observacoes + "</p>" : "") +
+    '<h4 class="details__subtitle">Exercício</h4>' +
+    '<div class="table-wrap"><table class="table"><thead><tr>' +
+      "<th>Exercício</th><th>Séries</th><th>Repetições</th><th>Carga</th><th>Descanso</th>" +
+    "</tr></thead><tbody><tr>" +
+      "<td>" + (ex.nome || "-") + "</td>" +
+      "<td>" + (ex.series || "-") + "</td>" +
+      "<td>" + (ex.repeticoes || "-") + "</td>" +
+      "<td>" + (ex.carga ? ex.carga + " kg" : "-") + "</td>" +
+      "<td>" + (ex.descanso ? ex.descanso + " s" : "-") + "</td>" +
+    "</tr></tbody></table></div>" +
+    '<div class="actions">' +
+      '<button class="btn btn--ghost" type="button" data-acao="editar" data-id="' + t.id + '">Editar</button>' +
+      '<button class="btn btn--danger" type="button" data-acao="excluir" data-id="' + t.id + '">Excluir</button>' +
+    "</div>";
+
+  document.getElementById("detalhes").scrollIntoView({ behavior: "smooth" });
+}
+
+/* ===== 11. DELEGAÇÃO DE EVENTOS =====
+   Um só "ouvinte" para cada área descobre qual botão foi clicado
+   (pelo data-acao) e chama a função certa. Funciona até para as
+   linhas criadas depois pelo JavaScript. */
+function tratarCliqueAcao(evento) {
+  const botao = evento.target.closest("button[data-acao]");
+  if (!botao) return;
+  const id = botao.dataset.id;
+  switch (botao.dataset.acao) {
+    case "detalhes": mostrarDetalhes(id); break;
+    case "editar":    editarTreino(id);    break;
+    case "excluir":  excluirTreino(id);  break;
+  }
+}
+lista.addEventListener("click", tratarCliqueAcao);
+painelDetalhes.addEventListener("click", tratarCliqueAcao);
+
+/* ===== 11B. EVENTOS DA BARRA DE FERRAMENTAS (pesquisa, filtros, ordenação) =====
+   Qualquer mudança nesses campos manda redesenhar a tabela. */
+document.getElementById("pesquisa").addEventListener("input", renderizarLista);
+document.getElementById("filtro-grupo").addEventListener("change", renderizarLista);
+document.getElementById("filtro-status").addEventListener("change", renderizarLista);
+document.getElementById("ordenar").addEventListener("change", renderizarLista);
+// Os botões "Buscar"/"Aplicar" e a tecla Enter também atualizam a lista.
+document.getElementById("toolbar").addEventListener("submit", function (e) { e.preventDefault(); renderizarLista(); });
+document.getElementById("toolbar").addEventListener("click", function (e) {
+  if (e.target.tagName === "BUTTON") { e.preventDefault(); renderizarLista(); }
 });
 
-/* ===== 10. TREINOS DE EXEMPLO (só na primeira vez que a página abre) ===== */
+/* ===== 12. TREINOS DE EXEMPLO (só na primeira vez que a página abre) ===== */
 const TREINOS_EXEMPLO = [
   { id: "ex1", nome: "Treino A - Peito e Tríceps", objetivo: "hipertrofia", grupo: "peito",
     duracao: "60", dataInicio: "2026-09-01", dataAtualizacao: "2026-09-28", nivel: "intermediario",
@@ -164,17 +319,16 @@ const TREINOS_EXEMPLO = [
     exercicio: { nome: "Desenvolvimento militar", series: "3", repeticoes: "15", carga: "20", descanso: "45" } }
 ];
 
-// Preenche a lista com os exemplos APENAS na primeira visita (nunca repete).
 function semearExemplos() {
   const jaSemeou = localStorage.getItem("meu-treino:semeado");
   if (!jaSemeou && treinos.length === 0) {
-    treinos = TREINOS_EXEMPLO.slice();   // cria uma cópia dos exemplos
+    treinos = TREINOS_EXEMPLO.slice();
     salvarNoStorage();
   }
-  localStorage.setItem("meu-treino:semeado", "sim"); // marca que já semeou uma vez
+  localStorage.setItem("meu-treino:semeado", "sim");
 }
 
-/* ===== 11. INÍCIO: ao abrir a página, carrega os dados e desenha a tela ===== */
+/* ===== 13. INÍCIO ===== */
 carregarDoStorage();
-semearExemplos();   // na primeira vez, insere os treinos de exemplo
+semearExemplos();
 renderizarLista();
