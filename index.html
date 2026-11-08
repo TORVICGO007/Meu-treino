@@ -49,10 +49,10 @@
     <section id="cadastro" class="card">
       <h2 class="section-title">Cadastrar treino</h2>
 
-      <!-- Mensagem de estado (será exibida via JS na última etapa) -->
-      <p class="message message--success" role="status">Treino salvo com sucesso!</p>
+      <!-- Mensagem de estado (controlada pelo JavaScript) -->
+      <p class="message message--success" id="mensagem" role="status" hidden>Treino salvo com sucesso!</p>
 
-      <form class="form" action="#" method="post">
+      <form class="form" id="form-treino" action="#" method="post">
         <div class="form-grid">
 
           <fieldset class="fieldset">
@@ -172,7 +172,7 @@
     <section id="listagem" class="card">
       <h2 class="section-title">Meus treinos</h2>
 
-      <form class="toolbar" action="#" method="get">
+      <form class="toolbar" id="toolbar" action="#" method="get">
         <div class="field toolbar__search">
           <label class="field__label" for="pesquisa">Pesquisar</label>
           <div class="search">
@@ -231,47 +231,8 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>Treino A - Peito e Tríceps</td>
-              <td>Hipertrofia</td>
-              <td>Peito</td>
-              <td>60 min</td>
-              <td>01/09/2026</td>
-              <td><span class="badge badge--ativo">Ativo</span></td>
-              <td class="row-actions">
-                <button class="btn btn--sm" type="button">Detalhes</button>
-                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
-                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Treino B - Costas e Bíceps</td>
-              <td>Hipertrofia</td>
-              <td>Costas</td>
-              <td>55 min</td>
-              <td>01/09/2026</td>
-              <td><span class="badge badge--ativo">Ativo</span></td>
-              <td class="row-actions">
-                <button class="btn btn--sm" type="button">Detalhes</button>
-                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
-                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Treino C - Pernas</td>
-              <td>Força</td>
-              <td>Pernas</td>
-              <td>70 min</td>
-              <td>15/08/2026</td>
-              <td><span class="badge badge--concluido">Concluído</span></td>
-              <td class="row-actions">
-                <button class="btn btn--sm" type="button">Detalhes</button>
-                <button class="btn btn--sm btn--ghost" type="button">Editar</button>
-                <button class="btn btn--sm btn--danger" type="button">Excluir</button>
-              </td>
-            </tr>
-          </tbody>
+          <!-- As linhas são geradas pelo JavaScript -->
+          <tbody id="lista-treinos"></tbody>
         </table>
       </div>
     </section>
@@ -279,48 +240,9 @@
     <!-- ===== Detalhes ===== -->
     <section id="detalhes" class="card">
       <h2 class="section-title">Detalhes do treino</h2>
-
-      <article class="details">
-        <div class="details__head">
-          <h3 class="details__title">Treino A - Peito e Tríceps</h3>
-          <span class="badge badge--ativo">Ativo</span>
-        </div>
-
-        <dl class="details__grid">
-          <div class="details__item"><dt>Objetivo</dt><dd>Hipertrofia</dd></div>
-          <div class="details__item"><dt>Grupo muscular</dt><dd>Peito</dd></div>
-          <div class="details__item"><dt>Duração</dt><dd>60 minutos</dd></div>
-          <div class="details__item"><dt>Data de início</dt><dd>01/09/2026</dd></div>
-          <div class="details__item"><dt>Data de atualização</dt><dd>28/09/2026</dd></div>
-          <div class="details__item"><dt>Nível</dt><dd>Intermediário</dd></div>
-        </dl>
-
-        <p class="note"><strong>Observações:</strong> Aumentar a carga do supino na próxima semana.</p>
-
-        <h4 class="details__subtitle">Exercícios</h4>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Exercício</th>
-                <th>Séries</th>
-                <th>Repetições</th>
-                <th>Carga</th>
-                <th>Descanso</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Supino reto</td><td>4</td><td>10</td><td>40 kg</td><td>90 s</td></tr>
-              <tr><td>Supino inclinado</td><td>3</td><td>12</td><td>30 kg</td><td>60 s</td></tr>
-              <tr><td>Tríceps corda</td><td>4</td><td>12</td><td>25 kg</td><td>60 s</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn--ghost" type="button">Editar</button>
-          <button class="btn btn--danger" type="button">Excluir</button>
-        </div>
+      <!-- Preenchido pelo JavaScript ao clicar em "Detalhes" (próxima etapa) -->
+      <article class="details" id="detalhes-conteudo">
+        <p class="note">Selecione um treino na listagem para ver os detalhes.</p>
       </article>
     </section>
 
@@ -330,15 +252,15 @@
       <div class="stats">
         <div class="stat">
           <span class="stat__label">Total de treinos</span>
-          <span class="stat__value">3</span>
+          <span class="stat__value" id="resumo-total">0</span>
         </div>
         <div class="stat">
           <span class="stat__label">Ativos</span>
-          <span class="stat__value stat__value--accent">2</span>
+          <span class="stat__value stat__value--accent" id="resumo-ativos">0</span>
         </div>
         <div class="stat">
           <span class="stat__label">Concluídos</span>
-          <span class="stat__value">1</span>
+          <span class="stat__value" id="resumo-concluidos">0</span>
         </div>
       </div>
     </aside>
@@ -347,7 +269,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>Meu Treino — Etapa 2: CSS, Layout e Responsividade</p>
+      <p>Meu Treino — Etapa 3: JavaScript, Dados e Interatividade</p>
     </div>
   </footer>
 
